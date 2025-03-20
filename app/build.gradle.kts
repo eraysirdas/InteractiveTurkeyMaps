@@ -33,6 +33,8 @@ android {
         viewBinding = true
     }
 }
+val retrofitVersion = "2.3.0"
+val rxJavaVersion = "2.1.1"
 
 dependencies {
 
@@ -45,6 +47,17 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
     implementation ("com.caverock:androidsvg:1.4")
 
+    implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation ("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation ("com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion")
+
+    implementation ("io.reactivex.rxjava2:rxjava:$rxJavaVersion")
+    implementation ("io.reactivex.rxjava2:rxandroid:$rxJavaVersion")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.6.1")
+
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
 }
