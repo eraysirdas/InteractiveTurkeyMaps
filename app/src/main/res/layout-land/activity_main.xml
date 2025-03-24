@@ -13,71 +13,69 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/filterPanel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Filtre Butonu -->
     <ImageButton
         android:id="@+id/filterButton"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:onClick="btnFilterClicked"
+        android:onClick="sideBarBtnClicked"
         android:src="@drawable/left_arrow"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"/>
 
     <!-- Filtre Paneli -->
     <LinearLayout
         android:id="@+id/filterPanel"
         android:layout_width="300dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         android:elevation="8dp"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <!-- Filtre İçeriği -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Filtre Seçenekleri"
             android:padding="16dp"
+            android:text="Filtre Seçenekleri"
             android:textSize="18sp"
-            android:textStyle="bold"/>
-        
+            android:textStyle="bold" />
+
         <Button
+            android:id="@+id/sideBarDeleteBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="16dp"
-            android:onClick="sideBarBtnClicked"
-            android:text="Temizle"
-            android:id="@+id/sideBarDeleteBtn"/>
-        
+            android:onClick="filterDeleteBtnClicked"
+            android:text="Temizle" />
+
         <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"
             android:id="@+id/spinnerPlantOrHoney"
-            android:layout_marginTop="5dp"
-            android:visibility="invisible"/>
-
-        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="5dp"
+            android:visibility="invisible" />
+
+        <Spinner
             android:id="@+id/spinnerSearchType"
-            android:visibility="invisible"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="5dp"
+            android:visibility="invisible" />
 
-            
-
-       
 
     </LinearLayout>
 

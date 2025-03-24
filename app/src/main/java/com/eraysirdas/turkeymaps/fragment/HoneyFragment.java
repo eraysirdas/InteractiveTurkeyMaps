@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,11 +15,9 @@ import android.view.ViewGroup;
 
 import com.eraysirdas.turkeymaps.R;
 import com.eraysirdas.turkeymaps.adapter.HoneyRecyclerAdapter;
-import com.eraysirdas.turkeymaps.adapter.PlantRecyclerAdapter;
 import com.eraysirdas.turkeymaps.model.CityHoneyModel;
-import com.eraysirdas.turkeymaps.model.CityPlantModel;
 import com.eraysirdas.turkeymaps.model.MapsModel;
-import com.eraysirdas.turkeymaps.service.MapsAPI;
+import com.eraysirdas.turkeymaps.service.api.MapsAPI;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,20 +25,25 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class HoneyFragment extends Fragment {
     private RecyclerView recyclerView;
+    CompositeDisposable compositeDisposable;
     ShimmerFrameLayout shimmerFrameLayout;
     private ArrayList<CityHoneyModel> recyclerDataArrayList;
     ArrayList<MapsModel> arrayList;
     Retrofit retrofit;
-    private String BASE_URL ="https://flora.biocoder.com.tr/api/homeapi/";
+    private String BASE_URL = "https://flora.biocoder.com.tr/api/homeapi/";
     private String cityName;
     private boolean isDataLoaded = false;
 
@@ -62,14 +64,15 @@ public class HoneyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView=view.findViewById(R.id.honeyRecyclerView);
-        shimmerFrameLayout=view.findViewById(R.id.shimmerView);
+        recyclerView = view.findViewById(R.id.honeyRecyclerView);
+        shimmerFrameLayout = view.findViewById(R.id.shimmerView);
 
         Gson gson = new GsonBuilder().setLenient().create();
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
         if (getArguments() != null) {
@@ -87,8 +90,8 @@ public class HoneyFragment extends Fragment {
         //loadData();
 
         recyclerDataArrayList = new ArrayList<>();
-        HoneyRecyclerAdapter adapter=new HoneyRecyclerAdapter(recyclerDataArrayList);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(requireContext());
+        HoneyRecyclerAdapter adapter = new HoneyRecyclerAdapter(recyclerDataArrayList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
@@ -102,7 +105,13 @@ public class HoneyFragment extends Fragment {
     private void loadData() {
         MapsAPI mapsAPI = retrofit.create(MapsAPI.class);
 
-        Call<MapsModel> call = mapsAPI.getDetailData(cityName);
+        /*compositeDisposable = new CompositeDisposable();
+        compositeDisposable.add(mapsAPI.getDetailData(cityName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponse));*/
+
+       Call<MapsModel> call = mapsAPI.getDetailData(cityName);
 
 
         call.enqueue(new Callback<MapsModel>() {
@@ -147,6 +156,31 @@ public class HoneyFragment extends Fragment {
         });
     }
 
+    private void handleResponse(MapsModel mapsModel) {
+        arrayList = new ArrayList<>();
+        arrayList.add(mapsModel);
+
+        recyclerDataArrayList.clear();
+
+        for (MapsModel model : arrayList) {
+            List<CityHoneyModel> cityHoneyModels = model.getCityHoney();
+            if (cityHoneyModels != null && !cityHoneyModels.isEmpty()) {
+
+                recyclerDataArrayList.addAll(cityHoneyModels);
+                recyclerView.getAdapter().notifyDataSetChanged();
+
+                isDataLoaded = true;
+                stopPlaceHolder();
+
+                for (CityHoneyModel honeyModel : cityHoneyModels) {
+                    System.out.println("Bitki Adı: " + honeyModel.honeyVerietyName);
+                }
+            } else {
+                System.out.println("CityPlants listesi boş veya null.");
+            }
+        }
+    }
+
     private void stopPlaceHolder() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -156,5 +190,11 @@ public class HoneyFragment extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
             }
         },1000);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //compositeDisposable.clear();
     }
 }

@@ -10,25 +10,13 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.eraysirdas.turkeymaps.R;
-import com.eraysirdas.turkeymaps.fragment.PlantFragment;
 import com.eraysirdas.turkeymaps.fragment.TabPagerAdapter;
-import com.eraysirdas.turkeymaps.model.CityPlantModel;
 import com.eraysirdas.turkeymaps.model.MapsModel;
-import com.eraysirdas.turkeymaps.service.MapsAPI;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailsActivity extends AppCompatActivity {
 

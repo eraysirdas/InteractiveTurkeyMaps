@@ -56,6 +56,7 @@ dependencies {
 
     implementation ("io.reactivex.rxjava2:rxjava:$rxJavaVersion")
     implementation ("io.reactivex.rxjava2:rxandroid:$rxJavaVersion")
+
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.6.1")
 
